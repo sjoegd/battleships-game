@@ -1,0 +1,23 @@
+{
+  "name": "battleships-game",
+  "version": "1.0.0",
+  "description": "Multiplayer battleships game with Node.js, Express.js, Socket.io, HTML and CSS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sjoegd/battleships-game.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sjoegd/battleships-game/issues"
+  },
+  "homepage": "https://github.com/sjoegd/battleships-game#readme",
+  "dependencies": {
+    "express": "^4.18.1"
+  }
+}

@@ -1,0 +1,75 @@
+:root {
+    font-size: 16px
+}
+
+body {
+    box-sizing: border-box;
+    height: 100vh;
+    display: grid;
+    place-items: center;
+}
+
+* {
+    box-sizing: inherit;
+    margin: 0;
+    padding: 0;
+}
+
+/* GAME */
+
+#game_container {
+    width: 80%;
+    border: 1px solid black;
+    display: grid;
+    grid-template: 1fr / 1fr 1fr;
+}
+
+.battleships_container {
+    height: 100%;
+    border: 1px solid black;
+}
+
+.battleships_matrix {
+   width: 75%;
+   aspect-ratio: 1 / 1;
+   background: black;
+   margin: 2.5% auto;
+   display: grid;
+   grid-template: repeat(10, 1fr) / repeat(10, 1fr);
+   grid-gap: 1px;
+   border: 1px solid black;
+}
+
+/* TESTING */
+.block {
+    grid-area: 1 / 1;
+    background: white;
+}
+.block2{
+    grid-area: 2 / 1;
+    background: white;
+}
+.block3 {
+    grid-area: 3 / 1;
+    background: white;
+}
+.block4 {
+    grid-area: 1 / 2;
+    background: white;
+}
+.block5{
+    grid-area: 2 / 2;
+    background: white;
+}
+.block6 {
+    grid-area: 3 / 2;
+    background: white;
+}
+.ship {
+    z-index: 1;
+    width: 95%;
+    grid-area: 1 / 2 / span 3;
+    background: grey;
+    border-radius: 1vmin;
+    margin: 0 auto;
+}
