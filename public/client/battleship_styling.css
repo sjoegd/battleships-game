@@ -1,5 +1,5 @@
 :root {
-    font-size: 16px
+    font-size: 0.1vmin;
 }
 
 body {
@@ -19,57 +19,75 @@ body {
 
 #game_container {
     width: 80%;
-    border: 1px solid black;
     display: grid;
     grid-template: 1fr / 1fr 1fr;
 }
 
 .battleships_container {
     height: 100%;
-    border: 1px solid black;
 }
 
 .battleships_matrix {
    width: 75%;
    aspect-ratio: 1 / 1;
-   background: black;
+   background-image: url("./grid_block.png");
+   background-size: 10%;
+   background-color: #60e8fade;
    margin: 2.5% auto;
    display: grid;
    grid-template: repeat(10, 1fr) / repeat(10, 1fr);
-   grid-gap: 1px;
-   border: 1px solid black;
+   border: 1rem solid black;
+   grid-gap: 1rem;
 }
 
 /* TESTING */
-.block {
-    grid-area: 1 / 1;
-    background: white;
-}
-.block2{
-    grid-area: 2 / 1;
-    background: white;
-}
-.block3 {
-    grid-area: 3 / 1;
-    background: white;
-}
-.block4 {
-    grid-area: 1 / 2;
-    background: white;
-}
-.block5{
-    grid-area: 2 / 2;
-    background: white;
-}
-.block6 {
-    grid-area: 3 / 2;
-    background: white;
-}
 .ship {
+    display: grid;
     z-index: 1;
-    width: 95%;
-    grid-area: 1 / 2 / span 3;
-    background: grey;
-    border-radius: 1vmin;
-    margin: 0 auto;
+    height: calc(100% - 3px);
+    width: calc(100% - 3px);
+    margin: auto;
+    position: relative;
+}
+.ship:hover {
+    filter: brightness(0.9);
+}
+
+.ship_l {
+    grid-area: 1 / 1 / span 3 / span 2;
+    grid-template: repeat(3, 1fr) / repeat(2, 1fr);
+}
+.ship_carrier{
+    grid-area: 2 / 4 / span 4 / span 2;
+    grid-template: repeat(4, 1fr) / repeat(2, 1fr);
+}
+.ship_tiny {
+    grid-area: 1 / 7 / span 2 / span 1;
+    grid-template: repeat(2, 1fr) / repeat(1, 1fr);
+}
+.ship_medium {
+    grid-area: 5 / 7 / span 1 / span 3;
+    grid-template: repeat(1, 1fr) / repeat(3, 1fr);
+}
+.ship_large {
+    grid-area: 10 / 6 / span 1 / span 4;
+    grid-template: repeat(1, 1fr) / repeat(4, 1fr);
+}
+
+.ship_part {
+    width: 100%;
+    height: 100%;
+    background-color: grey;
+}
+.ship_part_hit {
+    background-color: red
+}
+
+.block {
+    width: 100%;
+    height: 100%;
+    background-color: aqua;
+}
+.block_hit {
+    background-color: burlywood;
 }
