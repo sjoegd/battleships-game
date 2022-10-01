@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./css/styling.css"/>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="./javascript/battleship.js" defer></script>
+    <title>Battleships Game</title>
+  </head>
+  <body>
+    <div class="container_game">
+      <div class="matrix matrix_own">
+        <div class="ship small vertical" style="grid-row-start: 3; grid-column-start: 6">
+          <div class="block ship_part"></div>
+          <div class="block ship_part"></div>
+        </div>
+      </div>
+      <div class="matrix matrix_enemy"></div>
+    </div>
+  </body>
+</html>

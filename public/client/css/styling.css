@@ -1,0 +1,89 @@
+:root {
+    font-size: 2vmin;
+}
+
+body {
+    margin: 0;
+    box-sizing: border-box;
+    height: 100vh;
+}
+
+* {
+    box-sizing: inherit;
+}
+
+.container_game {
+    margin: 5rem auto;
+    display: flex;
+    justify-content: space-evenly;
+    max-width: 100vmin;
+    max-height: 100vmin;
+}
+
+.matrix {
+    width: 22.5rem;
+    height: 22.5rem;
+    background-image: url("../images/grid_block.png");
+    background-size: 10%;
+    background-color: lightblue;
+    display: grid;
+    grid-template: repeat(10, 1fr) / repeat(10, 1fr)
+}
+
+
+.block {
+    width: 100%;
+    height: 100%;
+}
+
+.block.ship_part {
+    background: grey;
+}
+
+.block.sea.destroyed {
+    background: darkblue;
+}
+
+.block.ship_part.destroyed {
+    background: rgb(63, 63, 63);
+}
+
+.ship {
+    margin: auto;
+    display: grid;
+    height: 95%;
+    width: 95%;
+}
+
+.ship.big.vertical {
+    grid-template: repeat(3, 1fr) / repeat(2, 1fr);
+    grid-row-end: span 3;
+    grid-column-end: span 2;
+}   
+.ship.big.horizontal {
+    grid-template: repeat(2, 1fr) / repeat(3, 1fr);
+    grid-row-end: span 2;
+    grid-column-end: span 3;
+}
+
+.ship.medium.vertical {
+    grid-template: repeat(3, 1fr) / repeat(1, 1fr);
+    grid-row-end: span 3;
+    grid-column-end: span 1;
+}
+.ship.medium.horizontal {
+    grid-template: repeat(1, 1fr) / repeat(3, 1fr);
+    grid-row-end: span 1;
+    grid-column-end: span 3;
+}
+
+.ship.small.vertical {
+    grid-template: repeat(2, 1fr) / repeat(1, 1fr);
+    grid-row-end: span 2;
+    grid-column-end: span 1;
+}
+.ship.small.horizontal {
+    grid-template: repeat(1, 1fr) / repeat(2, 1fr);
+    grid-row-end: span 1;
+    grid-column-end: span 2;
+}
