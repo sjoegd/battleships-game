@@ -155,7 +155,6 @@ socket.on('start', () => {
 });
 
 socket.on('ended', ({winner, message}) => {
-  console.log(winner, message)
   ATTACKING = false;
   // display messages, make sure nothing can be send to server anymore.
   DISPLAY_WON.innerHTML = winner ? "You won!" : "You lost.."
@@ -163,8 +162,6 @@ socket.on('ended', ({winner, message}) => {
 })
 
 socket.on('reset', () => {
-  console.log("resetting")
-
   // reset vars
   READY = false;
   handleShipMoveables(false);
