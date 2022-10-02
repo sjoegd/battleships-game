@@ -1,10 +1,4 @@
 /**
- * TODO:
- * Make it so that socket connection is only made AFTER setup is done (moving pieces)
- * and then make sure player cant move pieces until game reset (makes new socket then also)
- */
-
-/**
  * NOTE:
  * Computations are all done client side, which can be bad (not that heavy though)
  * This makes client be able to cheat by just accessing this code..
