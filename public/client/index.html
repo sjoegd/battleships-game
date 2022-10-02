@@ -12,12 +12,42 @@
   <body>
     <div class="container_game">
       <div class="matrix matrix_own">
-        <div class="ship small vertical" style="grid-row-start: 3; grid-column-start: 6">
+        <div class="ship medium horizontal moveable" style="grid-row-start: 3; grid-column-start: 6">
+          <div class="block ship_part"></div>
+          <div class="block ship_part"></div>
+          <div class="block ship_part"></div>
+        </div>
+        <div class="ship small vertical moveable" style="grid-row-start: 1; grid-column-start: 2">
+          <div class="block ship_part"></div>
+          <div class="block ship_part"></div>
+        </div>
+        <div class="ship medium vertical moveable" style="grid-row-start: 8; grid-column-start: 6">
+          <div class="block ship_part"></div>
+          <div class="block ship_part"></div>
+          <div class="block ship_part"></div>
+        </div>
+        <div class="ship big horizontal moveable" style="grid-row-start: 6; grid-column-start: 5">
+          <div class="block ship_part"></div>
+          <div class="block ship_part"></div>
+          <div class="block ship_part"></div>
+          <div class="block ship_part"></div>
+          <div class="block ship_part"></div>
+          <div class="block ship_part"></div>
+        </div>
+        <div class="ship small horizontal moveable" style="grid-row-start: 8; grid-column-start: 1">
           <div class="block ship_part"></div>
           <div class="block ship_part"></div>
         </div>
       </div>
       <div class="matrix matrix_enemy"></div>
+    </div>
+    <div class="container_ui">
+      <button class="button_start">Find game</button>
+      <div class="side_waiting">Finding game...</div>
+      <div class="container_ending">
+        <h1 class="display_won"></h1>
+        <h2 class="display_message"></h2>
+      </div>
     </div>
   </body>
 </html>

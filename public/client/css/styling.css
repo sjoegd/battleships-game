@@ -5,11 +5,45 @@
 body {
     margin: 0;
     box-sizing: border-box;
-    height: 100vh;
 }
 
 * {
     box-sizing: inherit;
+}
+
+.container_ui {
+    margin: 0 auto;
+    width: 50rem;
+    display: flex;
+}
+
+.button_start {
+    font-size: .75rem;
+    background: white;
+    border: grey .2rem solid;
+    color: grey;
+    font-weight: bold;
+    width: 5.5rem;
+    height: 2rem;
+    border-radius: 1rem;
+    margin: 0 .25rem;
+}
+.button_start:hover {
+    transform: scale(1.1);
+    transition: all 0.2s ease-out;
+}
+.button_start.disabled {
+    opacity: 0.5;
+}
+.button_start.disabled:hover {
+    transform: scale(1);
+}
+
+.side_waiting {
+    font-size: .75rem;
+    height: 2rem;
+    padding: 1rem 0;
+    display: none;
 }
 
 .container_game {
@@ -27,9 +61,9 @@ body {
     background-size: 10%;
     background-color: lightblue;
     display: grid;
-    grid-template: repeat(10, 1fr) / repeat(10, 1fr)
+    grid-template: repeat(10, 1fr) / repeat(10, 1fr);
+    position: relative;
 }
-
 
 .block {
     width: 100%;
@@ -40,30 +74,47 @@ body {
     background: grey;
 }
 
-.block.sea.destroyed {
-    background: darkblue;
-}
-
 .block.ship_part.destroyed {
     background: rgb(63, 63, 63);
+}
+
+.block.ship_part.destroyed.enemy {
+    margin: auto;
+    width: 75%;
+    height: 75%;
+    border-radius: 50%;
+}
+
+.block.sea.destroyed {
+    margin: auto;
+    width: 75%;
+    height: 75%;
+    border-radius: 50%;
+    background: white;
 }
 
 .ship {
     margin: auto;
     display: grid;
-    height: 95%;
-    width: 95%;
+    height: 100%;
+    width: 100%;
+    padding: 0.2rem;
+    position: absolute;
+}
+
+.ship.moveable:hover {
+    filter: brightness(0.80);
 }
 
 .ship.big.vertical {
-    grid-template: repeat(3, 1fr) / repeat(2, 1fr);
-    grid-row-end: span 3;
-    grid-column-end: span 2;
+    grid-template: repeat(5, 1fr) / repeat(1, 1fr);
+    grid-row-end: span 5;
+    grid-column-end: span 1;
 }   
 .ship.big.horizontal {
-    grid-template: repeat(2, 1fr) / repeat(3, 1fr);
-    grid-row-end: span 2;
-    grid-column-end: span 3;
+    grid-template: repeat(1, 1fr) / repeat(5, 1fr);
+    grid-row-end: span 1;
+    grid-column-end: span 5;
 }
 
 .ship.medium.vertical {
@@ -87,3 +138,11 @@ body {
     grid-row-end: span 1;
     grid-column-end: span 2;
 }
+
+.dead {
+    /* make some nice dead image or something */
+    background: url("../images/red_x.png");
+    background-size: contain;
+    z-index: 2;
+}
+
