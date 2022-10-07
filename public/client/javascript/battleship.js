@@ -12,12 +12,20 @@ const socket = io();
 // setup consts
 const MATRIX_OWN = document.querySelector('.matrix_own');
 const MATRIX_ENEMY = document.querySelector('.matrix_enemy');
-const MATRIX_WIDTH = MATRIX_ENEMY.getBoundingClientRect().width;
-const MATRIX_BOUNDS = MATRIX_OWN.getBoundingClientRect();
 const BUTTON_START = document.querySelector('.button_start');
 const SIDE_WAITING = document.querySelector('.side_waiting');
+const CONTAINER_ENDING = document.querySelector(".container_ending");
 const DISPLAY_WON = document.querySelector(".display_won");
 const DISPLAY_MESSAGE = document.querySelector(".display_message");
+const DISPLAY_TURN = document.querySelector(".display_turn");
+
+function getMATRIX_WIDTH() {
+  return MATRIX_ENEMY.getBoundingClientRect().width;
+}
+
+function getMATRIX_BOUNDS() {
+  return MATRIX_OWN.getBoundingClientRect();
+}
 
 // Ship info (based on horizontal)
 const SHIP_INFO = new Map(
@@ -116,8 +124,8 @@ MATRIX_OWN.addEventListener('pointerdown', event => {
     ship.onpointerup = null
     // handle dropping
     SHIP_BOUNDS = ship.getBoundingClientRect();
-    let x = Math.round(((SHIP_BOUNDS.x - MATRIX_BOUNDS.x) / MATRIX_WIDTH) * 10)
-    let y = Math.round(((SHIP_BOUNDS.y - MATRIX_BOUNDS.y) / MATRIX_WIDTH) * 10)
+    let x = Math.round(((SHIP_BOUNDS.x - getMATRIX_BOUNDS().x) / getMATRIX_WIDTH()) * 10)
+    let y = Math.round(((SHIP_BOUNDS.y - getMATRIX_BOUNDS().y) / getMATRIX_WIDTH()) * 10)
     setShipPosition(ship, {x, y})
     ship.style.left = '';
     ship.style.top = '';
@@ -131,8 +139,8 @@ MATRIX_ENEMY.addEventListener('click', event => {
   }
   // send attack to enemy through server
   socket.emit('attack', {
-    x: Math.floor((event.offsetX / MATRIX_WIDTH) * 10),
-    y: Math.floor((event.offsetY / MATRIX_WIDTH) * 10),
+    x: Math.floor((event.offsetX / getMATRIX_WIDTH()) * 10),
+    y: Math.floor((event.offsetY / getMATRIX_WIDTH()) * 10),
   });
 });
 
@@ -148,17 +156,20 @@ BUTTON_START.addEventListener('click', () => {
 // Setup socket communication
 
 socket.on('start', () => {
-  SIDE_WAITING.innerHTML = 'Found a game!';
+  SIDE_WAITING.innerText = 'Found a game!';
   setTimeout(() => {
     SIDE_WAITING.style.display = 'none';
   }, 2000);
+  DISPLAY_TURN.innerText = "Waiting for turn.."
 });
 
 socket.on('ended', ({winner, message}) => {
   ATTACKING = false;
   // display messages, make sure nothing can be send to server anymore.
-  DISPLAY_WON.innerHTML = winner ? "You won!" : "You lost.."
-  DISPLAY_MESSAGE.innerHTML = message;
+  CONTAINER_ENDING.style.display = "block"
+  DISPLAY_WON.innerText = winner ? "You won!" : "You lost.."
+  DISPLAY_MESSAGE.innerText = message;
+  DISPLAY_TURN.innerText = "";
 })
 
 socket.on('reset', () => {
@@ -188,6 +199,7 @@ socket.on('reset', () => {
 
   // reset representation of ships
   // ship positions, ships alive
+  ALIVE_SHIPS = 0;
   document.querySelectorAll('.ship').forEach(ship => {
     ALIVE_SHIPS++;
     let ship_pos = SHIP_POSITIONS.get(ship);
@@ -196,14 +208,15 @@ socket.on('reset', () => {
   })
 
   // reset UI
-  DISPLAY_WON.innerHTML = "";
-  DISPLAY_MESSAGE.innerHTML = "";
+  CONTAINER_ENDING.style.display = "none"
+  DISPLAY_WON.innerText = "";
+  DISPLAY_MESSAGE.innerText = "";
 
   // reset button
   BUTTON_START.disabled = false;
   BUTTON_START.classList.remove('disabled');
   SIDE_WAITING.style.display = 'none';
-  SIDE_WAITING.innerHTML = 'Finding game...';
+  SIDE_WAITING.innerText = 'Finding game...';
 })
 
 socket.on('attack', ({ x, y }) => {
@@ -262,6 +275,7 @@ socket.on('attack_info', ({ x, y, hit }) => {
 socket.on('attacking', ({ attacking }) => {
   // server turns my attacking mode on/off
   ATTACKING = attacking;
+  changeTurn();
 });
 
 // Helper functions
@@ -324,4 +338,12 @@ function handleShipMoveables(remove) {
       ship.classList.add("moveable");
     }
   })
+}
+
+function changeTurn() {
+  if(ATTACKING) {
+    DISPLAY_TURN.innerText = "Your turn!"
+  } else {
+    DISPLAY_TURN.innerText = "Enemy turn!"
+  }
 }

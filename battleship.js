@@ -106,15 +106,15 @@ function startNewGame(player1, player2) {
 
     const player1_dead = () => {
         ended = true;
-        player1.emit("ended", {winner: false, message: "All your ships are gone"})
-        player2.emit("ended", {winner: true, message: "You killed all the enemy ships"})
+        player1.emit("ended", {winner: false, message: "All your ships are destroyed.."})
+        player2.emit("ended", {winner: true, message: "You destroyed all the enemy ships"})
         setReset()
     }
 
     const player2_dead = () => {
         ended = true;
-        player1.emit("ended", {winner: true, message: "You killed all the enemy ships"})
-        player2.emit("ended", {winner: false, message: "All your ships are gone"})
+        player1.emit("ended", {winner: true, message: "You destroyed all the enemy ships"})
+        player2.emit("ended", {winner: false, message: "All your ships are destroyed.."})
         setReset()
     }
 
