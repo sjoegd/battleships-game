@@ -36,17 +36,25 @@ io.on("connect", (socket) => {
     })
 })
 
-function startNewGame(player1, player2) {
+async function startNewGame(player1, player2) {
     console.log("Starting new game")
     let ended = false;
+
+    // wait 2 seconds before starting
+    await (new Promise((res) => {
+        setTimeout(() => res(), 2000)
+    }))
 
     player1.emit("start");
     player2.emit("start");
 
     // decide random starter..
-
-    player1.emit("attacking", {attacking: true})
-
+    if(Math.round(Math.random()) == 0) {
+        player1.emit("attacking", {attacking: true})
+    } else {
+        player2.emit("attacking", {attacking: true})
+    }
+   
     const player1_attack = ({x, y}) => {
         player2.emit("attack", {x, y})
         player1.emit("attacking", {attacking: false})
@@ -138,7 +146,7 @@ function startNewGame(player1, player2) {
         setTimeout(() => {
             player1.emit("reset")
             player2.emit("reset")
-        }, 10000)
+        }, 5000)
     }
 }
 
