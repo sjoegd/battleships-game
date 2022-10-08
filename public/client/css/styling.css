@@ -5,38 +5,105 @@
 body {
     margin: 0;
     box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
 }
 
 * {
     box-sizing: inherit;
 }
 
+.noselect {
+    -webkit-touch-callout: none; /* iOS Safari */
+      -webkit-user-select: none; /* Safari */
+       -khtml-user-select: none; /* Konqueror HTML */
+         -moz-user-select: none; /* Old versions of Firefox */
+          -ms-user-select: none; /* Internet Explorer/Edge */
+              user-select: none; /* Non-prefixed version, currently
+                                    supported by Chrome, Edge, Opera and Firefox */
+  }
+
+.help_button {
+    font-size: 2.5rem;
+    position: absolute;
+    left: 2rem;
+    top: 2rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    border: solid grey 0.15rem;
+    color: grey;
+    z-index: 11;
+}
+.help_button:hover {
+    scale: 1.1;
+    transition: all 0.2s ease-out;
+}
+.help_button.overlaying {
+    color: white;
+    border-color: white;
+}
+
+.help_overlay {
+    padding-top: 5rem;
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 20rem;
+    height: 100vh;
+    background: grey;
+    opacity: 0.9;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    display: none;
+}
+.help_h2 {
+    text-align: center;
+}
+.help_h4 {
+    margin-left: 1rem;
+}
+
+.full_wrapper {
+    width: 50rem;
+    max-width: 100vw;
+}
+
 .container_ui {
     margin: 0 auto;
-    width: 50rem;
+    width: 45rem;
     display: flex;
 }
 
 .button_start {
+    padding: 0;
     font-size: .75rem;
     background: white;
     border: grey .2rem solid;
     color: grey;
     font-weight: bold;
-    width: 5.5rem;
-    height: 2rem;
+    width: 5rem;
+    height: 2.25rem;
     border-radius: 1rem;
     margin: 0 .25rem;
 }
 .button_start:hover {
-    transform: scale(1.1);
+    scale: 1.1;
     transition: all 0.2s ease-out;
 }
 .button_start.disabled {
     opacity: 0.5;
 }
 .button_start.disabled:hover {
-    transform: scale(1);
+    scale: 1;
 }
 
 .side_waiting {
@@ -47,7 +114,7 @@ body {
 }
 
 .container_game {
-    margin: 5rem auto;
+    margin: 2.5rem auto;
     display: flex;
     justify-content: space-evenly;
     max-width: 100vmin;
@@ -63,6 +130,7 @@ body {
     display: grid;
     grid-template: repeat(10, 1fr) / repeat(10, 1fr);
     position: relative;
+    overflow: visible;
 }
 
 .block {
@@ -146,3 +214,27 @@ body {
     z-index: 2;
 }
 
+.container_ending {
+    margin-left: auto;
+    width: 22.5rem;
+    text-align: center;
+    display: none; 
+}
+
+.display_won {
+    margin: 0;
+    font-size: 3.5rem;
+}
+.display_message {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.container_turn {
+    display: flex;
+    justify-content: center;
+}
+
+.display_turn {
+    margin: 0;
+}
