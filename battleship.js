@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const server = require('http').createServer(app)
-const io = require("socket.io")(server, {cors: {origin: "*"}})
+const io = require("socket.io")(server, {cors: {origin: "*"}}) // change cors?
 
 const PORT = 3000;
 
@@ -13,6 +13,12 @@ server.listen(PORT, () => {
 })
 
 // Simple battleship setup
+
+/**
+ * TODO:
+ * Make the queue better suited for bigger amounts (can bug out really easily now)
+ * Server must manage the incoming requests better (check for abuse etc)
+ */
 
 let sockets = [];
 io.on("connect", (socket) => {
@@ -29,11 +35,14 @@ io.on("connect", (socket) => {
 
     socket.on("ready", readyHandler)
 
-    socket.on("disconnect", () => {
+    const disconnectHandler = () => {
         console.log("Player disconnected", socket.id)
-        socket.off("ready", readyHandler);
         sockets = sockets.filter(player => player != socket);
-    })
+        socket.off("ready", readyHandler);
+        socket.off('disconnect', disconnectHandler)
+    }
+
+    socket.on("disconnect", disconnectHandler)
 })
 
 async function startNewGame(player1, player2) {
