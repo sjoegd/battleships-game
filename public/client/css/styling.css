@@ -16,6 +16,62 @@ body {
     box-sizing: inherit;
 }
 
+.noselect {
+    -webkit-touch-callout: none; /* iOS Safari */
+      -webkit-user-select: none; /* Safari */
+       -khtml-user-select: none; /* Konqueror HTML */
+         -moz-user-select: none; /* Old versions of Firefox */
+          -ms-user-select: none; /* Internet Explorer/Edge */
+              user-select: none; /* Non-prefixed version, currently
+                                    supported by Chrome, Edge, Opera and Firefox */
+  }
+
+.help_button {
+    font-size: 2.5rem;
+    position: absolute;
+    left: 2rem;
+    top: 2rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    border: solid grey 0.15rem;
+    color: grey;
+    z-index: 11;
+}
+.help_button:hover {
+    scale: 1.1;
+    transition: all 0.2s ease-out;
+}
+.help_button.overlaying {
+    color: white;
+    border-color: white;
+}
+
+.help_overlay {
+    padding-top: 5rem;
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 20rem;
+    height: 100vh;
+    background: grey;
+    opacity: 0.9;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    display: none;
+}
+.help_h2 {
+    text-align: center;
+}
+.help_h4 {
+    margin-left: 1rem;
+}
+
 .full_wrapper {
     width: 50rem;
     max-width: 100vw;
@@ -40,14 +96,14 @@ body {
     margin: 0 .25rem;
 }
 .button_start:hover {
-    transform: scale(1.1);
+    scale: 1.1;
     transition: all 0.2s ease-out;
 }
 .button_start.disabled {
     opacity: 0.5;
 }
 .button_start.disabled:hover {
-    transform: scale(1);
+    scale: 1;
 }
 
 .side_waiting {

@@ -10,6 +10,8 @@ const CONTAINER_ENDING = document.querySelector(".container_ending");
 const DISPLAY_WON = document.querySelector(".display_won");
 const DISPLAY_MESSAGE = document.querySelector(".display_message");
 const DISPLAY_TURN = document.querySelector(".display_turn");
+const HELP_BUTTON = document.querySelector(".help_button");
+const HELP_OVERLAY = document.querySelector(".help_overlay");
 const ROTATE_KEY = "r";
 
 function getMATRIX_WIDTH() {
@@ -295,6 +297,23 @@ socket.on('attacking', ({ attacking }) => {
   ATTACKING = attacking;
   changeTurn();
 });
+
+// Manage the help button/page
+let showingHelpPage = false;
+HELP_BUTTON.addEventListener("click", () => {
+  showingHelpPage = !showingHelpPage;
+  toggleHelpPage();
+})
+
+function toggleHelpPage() {
+  if(showingHelpPage) {
+    HELP_OVERLAY.style.display = "flex";
+    HELP_BUTTON.classList.add("overlaying")
+  } else {
+    HELP_OVERLAY.style.display = "none";
+    HELP_BUTTON.classList.remove("overlaying")
+  }
+}
 
 // Helper functions
 

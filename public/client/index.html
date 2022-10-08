@@ -10,11 +10,40 @@
     <title>Battleships Game</title>
   </head>
   <body>
+    <div class="help_button noselect">?</div>
+    <div class="help_overlay">
+      <div class="help_overlay_container">
+        <h2 class="help_h2">Help Page</h2>
+        <h4 class="help_h4">Ship Positioning:</h4>
+        <ul>
+          <li>To move a ship: left click on a ship and move the mouse</li>
+          <li>To rotate: press R while holding a ship</li>
+        </ul>
+        <h4 class="help_h4">Finding a game:</h4>
+        <ul>
+          <li>This game is multiplayer, so you need to find another person to play it</li>
+          <li>To find such a person, click find game, which will put you in a game againt a person</li>
+        </ul>
+        <h4 class="help_h4">Gameplay:</h4>
+        <ul>
+          <li>To attack: left click on a certain grid in the right matrix</li>
+          <li>A white dot, means you hit water</li>
+          <li>A black dot, means you hit a ship part</li>
+          <li>A ship part's ship is destroyed if red crosses appear over it</li>
+        </ul>
+        <h4 class="help_h4">Winning:</h4>
+        <ul>
+          <li>The only way to win in this game is to destroy all the enemy ships</li>
+          <li>Or the enemy disconnects..</li>
+          <li>After winning or losing your game will automatically reset</li>
+        </ul>
+      </div>
+    </div>
     <div class="full_wrapper">
       <div class="container_turn">
         <h2 class="display_turn"></h2>
       </div>
-      <div class="container_game">
+      <div class="container_game noselect">
         <div class="matrix matrix_own">
           <div class="ship medium horizontal moveable" style="grid-row-start: 3; grid-column-start: 6">
             <div class="block ship_part"></div>
@@ -46,7 +75,7 @@
         <div class="matrix matrix_enemy"></div>
       </div>
       <div class="container_ui">
-        <button class="button_start">Find game</button>
+        <button class="button_start noselect">Find game</button>
         <div class="side_waiting">Finding a game...</div>
         <div class="container_ending">
           <h1 class="display_won"></h1>

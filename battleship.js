@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const server = require('http').createServer(app)
 const io = require("socket.io")(server, {cors: {origin: "*"}}) // change cors?
+const PlayerQueue = require("./my_modules/PlayerQueue.js");
 
 const PORT = 3000;
 
@@ -16,28 +17,30 @@ server.listen(PORT, () => {
 
 /**
  * TODO:
- * Make the queue better suited for bigger amounts (can bug out really easily now)
  * Server must manage the incoming requests better (check for abuse etc)
  */
 
-let sockets = [];
+const playerQueue = new PlayerQueue();
+
 io.on("connect", (socket) => {
     console.log("Player connected: ", socket.id)
 
     const readyHandler = () => {
         console.log("Player looking for a game: ", socket.id)
-        sockets.push(socket)
-        if(sockets.length == 2) {
-            startNewGame(sockets[0], sockets[1])
-            sockets.length = 0; // reset waiting queue
+
+        playerQueue.addPlayer(socket);
+
+        if(playerQueue.enoughPlayers(2)) {
+            let [player1, player2] = playerQueue.getPlayers(2)
+            startNewGame(player1, player2)
         }
     }
 
     socket.on("ready", readyHandler)
 
     const disconnectHandler = () => {
-        console.log("Player disconnected", socket.id)
-        sockets = sockets.filter(player => player != socket);
+        console.log("Player disconnected", socket.id);
+        playerQueue.removePlayer(socket);
         socket.off("ready", readyHandler);
         socket.off('disconnect', disconnectHandler)
     }
@@ -47,11 +50,15 @@ io.on("connect", (socket) => {
 
 async function startNewGame(player1, player2) {
     console.log("Starting new game")
+    
     let ended = false;
 
-    // wait 2 seconds before starting
+    let player1_attacking = false;
+    let player2_attacking = false;
+
+    // wait 1 second before starting
     await (new Promise((res) => {
-        setTimeout(() => res(), 2000)
+        setTimeout(() => res(), 1000)
     }))
 
     player1.emit("start");
@@ -60,28 +67,46 @@ async function startNewGame(player1, player2) {
     // decide random starter..
     if(Math.round(Math.random()) == 0) {
         player1.emit("attacking", {attacking: true})
+        player1_attacking = true;
     } else {
         player2.emit("attacking", {attacking: true})
+        player2_attacking = true;
     }
    
     const player1_attack = ({x, y}) => {
-        player2.emit("attack", {x, y})
-        player1.emit("attacking", {attacking: false})
+        if(!player1_attacking || ended) {
+            return;
+        }
+        player2.emit("attack", {x, y});
+        player1.emit("attacking", {attacking: false});
+        player1_attacking = false;
     }
 
     const player2_attack = ({x, y}) => {
-        player1.emit("attack", {x, y})
-        player2.emit("attacking", {attacking: false})
+        if(!player2_attacking || ended) {
+            return;
+        }
+        player1.emit("attack", {x, y});
+        player2.emit("attacking", {attacking: false});
+        player2_attacking = false;
     }
 
     const player1_attack_info = ({x, y, hit}) => {
+        if(ended) {
+            return;
+        }
         player2.emit("attack_info", {x, y, hit});
         player1.emit("attacking", {attacking: true})
+        player1_attacking = true;
     }
 
     const player2_attack_info = ({x, y, hit}) => {
+        if(ended) {
+            return;
+        }
         player1.emit("attack_info", {x, y, hit});
         player2.emit("attacking", {attacking: true})
+        player2_attacking = true;
     }
     
     player1.on("attack", player1_attack)
@@ -92,10 +117,16 @@ async function startNewGame(player1, player2) {
 
     // handle ships dying
     const player1_dead_ship = ({x, y, width, height}) => {
+        if(ended) {
+            return;
+        }
         player2.emit("dead_ship", {x, y, width, height})
     }
 
     const player2_dead_ship = ({x, y, width, height}) => {
+        if(ended) {
+            return;
+        }
         player1.emit("dead_ship", {x, y, width, height})
     }
 
@@ -122,6 +153,9 @@ async function startNewGame(player1, player2) {
     })
 
     const player1_dead = () => {
+        if(ended) {
+            return;
+        }
         ended = true;
         player1.emit("ended", {winner: false, message: "All your ships are destroyed.."})
         player2.emit("ended", {winner: true, message: "You destroyed all the enemy ships"})
@@ -129,6 +163,9 @@ async function startNewGame(player1, player2) {
     }
 
     const player2_dead = () => {
+        if(ended) {
+            return;
+        }
         ended = true;
         player1.emit("ended", {winner: true, message: "You destroyed all the enemy ships"})
         player2.emit("ended", {winner: false, message: "All your ships are destroyed.."})
