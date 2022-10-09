@@ -44,7 +44,8 @@
     </div>
     <div class="full_wrapper">
       <div class="container_turn">
-        <h2 class="display_turn"></h2>
+        <h2 class="display_turn noselect"></h2>
+        <div class="button_disconnect noselect">Disconnect</div>
       </div>
       <div class="container_game noselect">
         <div class="matrix matrix_own">
@@ -85,11 +86,16 @@
         <div class="matrix matrix_enemy"></div>
       </div>
       <div class="container_ui">
-        <button class="button_start noselect">Find game</button>
-        <div class="side_waiting">Finding a game...</div>
-        <div class="container_ending">
-          <h1 class="display_won"></h1>
-          <h2 class="display_message"></h2>
+        <div class="row">
+          <button class="button_start noselect">Find game</button>
+          <div class="side_waiting">Finding a game...</div>
+          <div class="container_ending">
+            <h1 class="display_won"></h1>
+            <h2 class="display_message"></h2>
+          </div>
+        </div>
+        <div class="row">
+          <div class="button_cancel noselect">cancel</div>
         </div>
       </div>
     </div>

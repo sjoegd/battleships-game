@@ -87,6 +87,12 @@ body {
     margin: 0 auto;
     width: 45rem;
     display: flex;
+    flex-direction: column;
+}
+
+.container_ui .row {
+    width: 100%;
+    display: flex;
 }
 
 .button_start {
@@ -114,13 +120,13 @@ body {
 
 .side_waiting {
     font-size: .75rem;
-    height: 2rem;
-    padding: 1rem 0;
+    width: 6rem;
     display: none;
+    margin-top: auto;
 }
 
 .container_game {
-    margin: 2.5rem auto;
+    margin: 1rem auto;
     display: flex;
     justify-content: space-evenly;
     max-width: 100vmin;
@@ -251,18 +257,47 @@ body {
 
 .display_won {
     margin: 0;
-    font-size: 3.5rem;
+    font-size: 3rem;
 }
 .display_message {
     margin: 0;
-    font-size: 1.5rem;
+    font-size: 1.25rem;
 }
 
 .container_turn {
     display: flex;
     justify-content: center;
+    padding: 0 2.5rem
 }
 
 .display_turn {
     margin: 0;
+    margin-right: auto;
+}
+
+.button_disconnect {
+    margin-left: auto;
+    border: 0.15rem solid grey;
+    color: grey;
+    width: 4rem;
+    height: 1.25rem;
+    font-size: 0.8rem;
+    text-align: center;
+    display: none;
+}
+
+.button_disconnect:hover {
+    filter: brightness(0.1);
+    scale: 1.05;
+}
+
+.button_cancel {
+    margin: 0 0.25rem;
+    width: 5rem;
+    text-align: center;
+    color: darkred;
+    display: none;
+}
+.button_cancel:hover {
+    color: red;
 }

@@ -1,3 +1,8 @@
+/**
+ * TODO:
+ * Add a cancel button when queueing, add a chat?, add a game state shower and a disconnect button next to it which leaves the match.
+ */
+
 // setup socket
 const socket = io();
 
@@ -12,10 +17,12 @@ const DISPLAY_MESSAGE = document.querySelector(".display_message");
 const DISPLAY_TURN = document.querySelector(".display_turn");
 const HELP_BUTTON = document.querySelector(".help_button");
 const HELP_OVERLAY = document.querySelector(".help_overlay");
+const BUTTON_DISCONNECT= document.querySelector(".button_disconnect");
+const BUTTON_CANCEL = document.querySelector(".button_cancel");
 const ROTATE_KEY = "r";
 
 function getMATRIX_WIDTH() {
-  return MATRIX_ENEMY.getBoundingClientRect().width;
+  return MATRIX_OWN.getBoundingClientRect().width;
 }
 
 function getMATRIX_BOUNDS() {
@@ -183,18 +190,43 @@ MATRIX_ENEMY.addEventListener('click', event => {
 BUTTON_START.addEventListener('click', () => {
   BUTTON_START.disabled = true;
   BUTTON_START.classList.add('disabled');
+
   SIDE_WAITING.style.display = 'block';
+  BUTTON_CANCEL.style.display = 'block';
+
   READY = true;
   handleShipMoveables(true);
+
   socket.emit('ready');
 });
+
+BUTTON_CANCEL.addEventListener('click', () => {
+  BUTTON_START.disabled = false;
+  BUTTON_START.classList.remove('disabled');
+
+  SIDE_WAITING.style.display = 'none';
+  BUTTON_CANCEL.style.display = 'none';
+
+  READY = false;
+  handleShipMoveables(false);
+
+  socket.emit('cancel');
+})
+
+BUTTON_DISCONNECT.addEventListener('click', () => {
+  DISPLAY_TURN.innerText = '';
+  BUTTON_DISCONNECT.style.display = 'none';
+  socket.emit('leave');
+})
 
 // Setup socket communication
 
 socket.on('start', () => {
+  BUTTON_CANCEL.style.display = 'none'
   SIDE_WAITING.innerText = 'Found a game!';
   setTimeout(() => {
     SIDE_WAITING.style.display = 'none';
+    BUTTON_DISCONNECT.style.display = 'block';
   }, 2000);
   DISPLAY_TURN.innerText = "Waiting for turn.."
 });
@@ -203,6 +235,7 @@ socket.on('ended', ({winner, message}) => {
   ATTACKING = false;
   // display messages, make sure nothing can be send to server anymore.
   CONTAINER_ENDING.style.display = "block"
+  BUTTON_DISCONNECT.style.display = 'none';
   DISPLAY_WON.innerText = winner ? "You won!!" : "You lost.."
   DISPLAY_MESSAGE.innerText = message;
   DISPLAY_TURN.innerText = "";
