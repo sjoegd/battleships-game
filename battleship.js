@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const server = require('http').createServer(app)
-const io = require("socket.io")(server, {cors: {origin: "*"}}) // change cors?
+const io = require("socket.io")(server, {cors: {origin: "*"}}) // change?
 const PlayerQueue = require("./my_modules/PlayerQueue.js");
 
 const PORT = 3000;
@@ -17,7 +17,8 @@ server.listen(PORT, () => {
 
 /**
  * TODO:
- * Server must manage the incoming requests better (check for abuse etc)
+ * Let user attack keep attacking if he/she hit a ship, but always make it stop when he/she kills a ship
+ * Make lobbies (for friend lobbies) main idea: create a link that a friend can join
  */
 
 const playerQueue = new PlayerQueue();
@@ -78,7 +79,7 @@ async function startNewGame(player1, player2) {
             return;
         }
         player2.emit("attack", {x, y});
-        player1.emit("attacking", {attacking: false});
+        player1.emit("attacking", {attacking: false}); // move to attack info
         player1_attacking = false;
     }
 
@@ -87,7 +88,7 @@ async function startNewGame(player1, player2) {
             return;
         }
         player1.emit("attack", {x, y});
-        player2.emit("attacking", {attacking: false});
+        player2.emit("attacking", {attacking: false}); // move to attack info
         player2_attacking = false;
     }
 
@@ -96,8 +97,16 @@ async function startNewGame(player1, player2) {
             return;
         }
         player2.emit("attack_info", {x, y, hit});
-        player1.emit("attacking", {attacking: true})
+        player1.emit("attacking", {attacking: true}) 
         player1_attacking = true;
+
+        // if(hit) {
+        //     player1.emit("attacking", {attacking: true}) 
+        //     player1_attacking = true;
+        // } else {
+        //     player2.emit("attacking", {attacking: true}) 
+        //     player2_attacking = true;
+        // }
     }
 
     const player2_attack_info = ({x, y, hit}) => {

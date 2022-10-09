@@ -319,7 +319,7 @@ function toggleHelpPage() {
 
 function createDeadShip({x, y, width, height}, enemy) {
   let dead_div = document.createElement("div");
-  dead_div.classList.add("dead", "ship")
+  dead_div.classList.add("dead")
   dead_div.style = `
     grid-row-start: ${y+1}; 
     grid-column-start: ${x+1};
