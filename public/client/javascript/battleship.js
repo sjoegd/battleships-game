@@ -1,3 +1,8 @@
+/**
+ * TODO:
+ * Add a cancel button when queueing, add a chat?, add a game state shower and a disconnect button next to it which leaves the match.
+ */
+
 // setup socket
 const socket = io();
 
@@ -12,10 +17,12 @@ const DISPLAY_MESSAGE = document.querySelector(".display_message");
 const DISPLAY_TURN = document.querySelector(".display_turn");
 const HELP_BUTTON = document.querySelector(".help_button");
 const HELP_OVERLAY = document.querySelector(".help_overlay");
+const BUTTON_DISCONNECT= document.querySelector(".button_disconnect");
+const BUTTON_CANCEL = document.querySelector(".button_cancel");
 const ROTATE_KEY = "r";
 
 function getMATRIX_WIDTH() {
-  return MATRIX_ENEMY.getBoundingClientRect().width;
+  return MATRIX_OWN.getBoundingClientRect().width;
 }
 
 function getMATRIX_BOUNDS() {
@@ -25,6 +32,10 @@ function getMATRIX_BOUNDS() {
 // Ship info (based on horizontal)
 const SHIP_INFO = new Map(
   Object.entries({
+    tiny: {
+      width: 1,
+      height: 1,
+    },
     small: {
       width: 2,
       height: 1,
@@ -98,20 +109,29 @@ MATRIX_OWN.addEventListener('pointerdown', event => {
     return false; // cancel
   }
 
-  // handle rotating
-  // IMPLEMENT
+  // handle rotating and drag n drop
   let rotated = false;
   let lastMove = event;
   
-  // handle drag n drop
+  // temporarily change grid position for bugfix:
+  let {x: x_c, y: y_c, width, height} = SHIP_POSITIONS.get(ship);
+  let temp_gridX = Math.max(x_c - height + 1, 1)
+  let temp_gridY = Math.max(y_c - width + 1, 1)
+  let x_tempDifference = ((x_c - temp_gridX + 1) * (getMATRIX_WIDTH()/10));
+  let y_tempDifference = Math.abs((y_c - temp_gridY + 1) * (getMATRIX_WIDTH()/10));
+  ship.style = `grid-row-start: ${temp_gridY}; grid-column-start: ${temp_gridX}`
+
   let SHIP_BOUNDS = ship.getBoundingClientRect();
 
   let x_offsetShip = event.pageX - SHIP_BOUNDS.x
   let y_offsetShip = event.pageY - SHIP_BOUNDS.y
 
+  ship.style.left = `${lastMove.pageX + x_tempDifference - SHIP_BOUNDS.x - x_offsetShip}px`
+  ship.style.top = `${lastMove.pageY + y_tempDifference - SHIP_BOUNDS.y - y_offsetShip}px`
+
   function moveAt(event) {
-    ship.style.left = `${event.pageX - SHIP_BOUNDS.x - x_offsetShip}px`
-    ship.style.top = `${event.pageY - SHIP_BOUNDS.y - y_offsetShip}px`
+    ship.style.left = `${event.pageX + x_tempDifference - SHIP_BOUNDS.x - x_offsetShip}px`
+    ship.style.top = `${event.pageY + y_tempDifference - SHIP_BOUNDS.y - y_offsetShip}px`
     lastMove = event;
   }
 
@@ -121,13 +141,17 @@ MATRIX_OWN.addEventListener('pointerdown', event => {
     }
     rotated = !rotated;
     
-    // swap offsets
+    // swap offsets and temp differences
     let temp = x_offsetShip;
     x_offsetShip = y_offsetShip;
     y_offsetShip = temp;
 
-    ship.style.left = `${lastMove.pageX - SHIP_BOUNDS.x - x_offsetShip}px`
-    ship.style.top = `${lastMove.pageY - SHIP_BOUNDS.y - y_offsetShip}px`
+    temp = x_tempDifference;
+    x_tempDifference = y_tempDifference;
+    y_tempDifference = temp;
+
+    ship.style.left = `${lastMove.pageX + x_tempDifference - SHIP_BOUNDS.x - x_offsetShip}px`
+    ship.style.top = `${lastMove.pageY + y_tempDifference - SHIP_BOUNDS.y - y_offsetShip}px`
 
     rotateShip(ship);
   }
@@ -150,7 +174,6 @@ MATRIX_OWN.addEventListener('pointerdown', event => {
   }
 
   document.addEventListener('pointerup', stopAt)
-
 })
 
 MATRIX_ENEMY.addEventListener('click', event => {
@@ -167,18 +190,43 @@ MATRIX_ENEMY.addEventListener('click', event => {
 BUTTON_START.addEventListener('click', () => {
   BUTTON_START.disabled = true;
   BUTTON_START.classList.add('disabled');
+
   SIDE_WAITING.style.display = 'block';
+  BUTTON_CANCEL.style.display = 'block';
+
   READY = true;
   handleShipMoveables(true);
+
   socket.emit('ready');
 });
+
+BUTTON_CANCEL.addEventListener('click', () => {
+  BUTTON_START.disabled = false;
+  BUTTON_START.classList.remove('disabled');
+
+  SIDE_WAITING.style.display = 'none';
+  BUTTON_CANCEL.style.display = 'none';
+
+  READY = false;
+  handleShipMoveables(false);
+
+  socket.emit('cancel');
+})
+
+BUTTON_DISCONNECT.addEventListener('click', () => {
+  DISPLAY_TURN.innerText = '';
+  BUTTON_DISCONNECT.style.display = 'none';
+  socket.emit('leave');
+})
 
 // Setup socket communication
 
 socket.on('start', () => {
+  BUTTON_CANCEL.style.display = 'none'
   SIDE_WAITING.innerText = 'Found a game!';
   setTimeout(() => {
     SIDE_WAITING.style.display = 'none';
+    BUTTON_DISCONNECT.style.display = 'block';
   }, 2000);
   DISPLAY_TURN.innerText = "Waiting for turn.."
 });
@@ -187,6 +235,7 @@ socket.on('ended', ({winner, message}) => {
   ATTACKING = false;
   // display messages, make sure nothing can be send to server anymore.
   CONTAINER_ENDING.style.display = "block"
+  BUTTON_DISCONNECT.style.display = 'none';
   DISPLAY_WON.innerText = winner ? "You won!!" : "You lost.."
   DISPLAY_MESSAGE.innerText = message;
   DISPLAY_TURN.innerText = "";
@@ -319,7 +368,7 @@ function toggleHelpPage() {
 
 function createDeadShip({x, y, width, height}, enemy) {
   let dead_div = document.createElement("div");
-  dead_div.classList.add("dead", "ship")
+  dead_div.classList.add("dead")
   dead_div.style = `
     grid-row-start: ${y+1}; 
     grid-column-start: ${x+1};
@@ -362,7 +411,11 @@ function rotateShip(ship) {
 }
 
 function setShipPosition(ship, { x, y }, rotated) {
-  let { width, height, children } = SHIP_POSITIONS.get(ship);
+  let { x: x_c, y: y_c, width, height, children } = SHIP_POSITIONS.get(ship);
+
+  //correct current position style
+  ship.style = `grid-row-start: ${y_c+1}; grid-column-start: ${x_c+1}`
+
   if(rotated) {
     [width, height] = [height, width];
   }

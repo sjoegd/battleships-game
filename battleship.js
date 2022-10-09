@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const server = require('http').createServer(app)
-const io = require("socket.io")(server, {cors: {origin: "*"}}) // change cors?
+const io = require("socket.io")(server, {cors: {origin: "*"}}) // change?
 const PlayerQueue = require("./my_modules/PlayerQueue.js");
 
 const PORT = 3000;
@@ -13,39 +13,45 @@ server.listen(PORT, () => {
     console.log(`Started! Listening on port: ${PORT}`)
 })
 
-// Simple battleship setup
-
 /**
  * TODO:
- * Server must manage the incoming requests better (check for abuse etc)
+ * Make lobbies (for friend lobbies) main idea: create a link that a friend can join, and i separate listener for those.
  */
 
 const playerQueue = new PlayerQueue();
 
 io.on("connect", (socket) => {
-    console.log("Player connected: ", socket.id)
+    console.log("Player connected: ", socket.id);
 
     const readyHandler = () => {
-        console.log("Player looking for a game: ", socket.id)
+        console.log("Player looking for a game: ", socket.id);
 
         playerQueue.addPlayer(socket);
 
         if(playerQueue.enoughPlayers(2)) {
-            let [player1, player2] = playerQueue.getPlayers(2)
-            startNewGame(player1, player2)
+            let [player1, player2] = playerQueue.getPlayers(2);
+            startNewGame(player1, player2);
         }
     }
 
-    socket.on("ready", readyHandler)
+    socket.on("ready", readyHandler);
+
+    const cancelHandler = () => {
+        console.log("Player stopped looking for a game: ", socket.id)
+        playerQueue.removePlayer(socket);
+    }
+
+    socket.on("cancel", cancelHandler);
 
     const disconnectHandler = () => {
         console.log("Player disconnected", socket.id);
         playerQueue.removePlayer(socket);
         socket.off("ready", readyHandler);
-        socket.off('disconnect', disconnectHandler)
+        socket.off("cancel", cancelHandler);
+        socket.off('disconnect', disconnectHandler);
     }
 
-    socket.on("disconnect", disconnectHandler)
+    socket.on("disconnect", disconnectHandler);
 })
 
 async function startNewGame(player1, player2) {
@@ -56,13 +62,13 @@ async function startNewGame(player1, player2) {
     let player1_attacking = false;
     let player2_attacking = false;
 
-    // wait 1 second before starting
+    player1.emit("start");
+    player2.emit("start");
+
+    // wait 2 seconds before starting
     await (new Promise((res) => {
         setTimeout(() => res(), 1000)
     }))
-
-    player1.emit("start");
-    player2.emit("start");
 
     // decide random starter..
     if(Math.round(Math.random()) == 0) {
@@ -72,13 +78,13 @@ async function startNewGame(player1, player2) {
         player2.emit("attacking", {attacking: true})
         player2_attacking = true;
     }
-   
+    
+    // handle attacking
     const player1_attack = ({x, y}) => {
         if(!player1_attacking || ended) {
             return;
         }
         player2.emit("attack", {x, y});
-        player1.emit("attacking", {attacking: false});
         player1_attacking = false;
     }
 
@@ -87,7 +93,6 @@ async function startNewGame(player1, player2) {
             return;
         }
         player1.emit("attack", {x, y});
-        player2.emit("attacking", {attacking: false});
         player2_attacking = false;
     }
 
@@ -96,8 +101,8 @@ async function startNewGame(player1, player2) {
             return;
         }
         player2.emit("attack_info", {x, y, hit});
-        player1.emit("attacking", {attacking: true})
-        player1_attacking = true;
+        
+        changeAttacker(!hit, hit);
     }
 
     const player2_attack_info = ({x, y, hit}) => {
@@ -105,8 +110,8 @@ async function startNewGame(player1, player2) {
             return;
         }
         player1.emit("attack_info", {x, y, hit});
-        player2.emit("attacking", {attacking: true})
-        player2_attacking = true;
+
+        changeAttacker(hit, !hit);
     }
     
     player1.on("attack", player1_attack)
@@ -121,6 +126,8 @@ async function startNewGame(player1, player2) {
             return;
         }
         player2.emit("dead_ship", {x, y, width, height})
+
+        changeAttacker(true, false);
     }
 
     const player2_dead_ship = ({x, y, width, height}) => {
@@ -128,6 +135,8 @@ async function startNewGame(player1, player2) {
             return;
         }
         player1.emit("dead_ship", {x, y, width, height})
+
+        changeAttacker(false, true);
     }
 
     player1.on("dead_ship", player1_dead_ship)
@@ -152,6 +161,9 @@ async function startNewGame(player1, player2) {
         setReset()
     })
 
+    player1.on("disconnect", player1_disconnect)
+    player2.on("disconnect", player2_disconnect)
+
     const player1_dead = () => {
         if(ended) {
             return;
@@ -172,13 +184,40 @@ async function startNewGame(player1, player2) {
         setReset()
     }
 
-    player1.on("disconnect", player1_disconnect)
-    player2.on("disconnect", player2_disconnect)
-
     player1.on("dead", player1_dead)
     player2.on("dead", player2_dead)
 
-    function setReset() {
+    const player1_leave = () => {
+        if(ended) {
+            return;
+        }
+        ended = true;
+        player1.emit("reset");
+        player2.emit("ended", {winner: true, message: "Enemy disconnected"});
+        setReset(true)
+    }
+
+    const player2_leave = () => {
+        if(ended) {
+            return;
+        }
+        ended = true;
+        player2.emit("reset");
+        player1.emit("ended", {winner: true, message: "Enemy disconnected"});
+        setReset(false, true)
+    }
+
+    player1.on("leave", player1_leave)
+    player2.on("leave", player2_leave)
+
+    function changeAttacker(play1, play2) {
+        player1.emit("attacking", {attacking: play1}) 
+        player2.emit("attacking", {attacking: play2})
+        player1_attacking = play1;
+        player2_attacking = play2;
+    }
+
+    function setReset(p1_left, p2_left) {
         player1.off("attack", player1_attack)
         player2.off("attack", player2_attack)
         player1.off("attack_info", player1_attack_info)
@@ -189,9 +228,15 @@ async function startNewGame(player1, player2) {
         player2.off("disconnect", player2_disconnect)
         player1.off("dead", player1_dead)
         player2.off("dead", player2_dead)
+        player1.off("leave", player1_leave)
+        player2.off("leave", player2_leave)
         setTimeout(() => {
-            player1.emit("reset")
-            player2.emit("reset")
+            if(!p1_left) {
+                player1.emit("reset")
+            }
+            if(!p2_left) {
+                player2.emit("reset")
+            }
         }, 5000)
     }
 }

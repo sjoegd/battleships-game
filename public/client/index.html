@@ -17,17 +17,19 @@
         <h2 class="help_h2">Help Page</h2>
         <h4 class="help_h4">Ship Positioning:</h4>
         <ul>
-          <li>To move a ship: left click on a ship and move the mouse</li>
-          <li>To rotate: press R while holding a ship</li>
+          <li>Left click and hold on a ship to move it</li>
+          <li>While holding the ship, you can press "r" to rotate it</li>
         </ul>
         <h4 class="help_h4">Finding a game:</h4>
         <ul>
-          <li>This game is multiplayer, so you need to find another person to play it</li>
-          <li>To find such a person, click find game, which will put you in a game againt a person</li>
+          <li>To find a game with a random opponent, click the find game button,
+              this will put you in a queue and put you in a game if an enemy is found
+          </li>
         </ul>
         <h4 class="help_h4">Gameplay:</h4>
         <ul>
-          <li>To attack: left click on a certain grid in the right matrix</li>
+          <li>Left click on a grid block in the right (enemy) matrix to attack</li>
+          <li>If you hit an attack, you can attack again till you either destroy a ship or miss</li>
           <li>A white dot, means you hit water</li>
           <li>A black dot, means you hit a ship part</li>
           <li>A ship part's ship is destroyed if red crosses appear over it</li>
@@ -36,51 +38,64 @@
         <ul>
           <li>The only way to win in this game is to destroy all the enemy ships</li>
           <li>Or the enemy disconnects..</li>
-          <li>After winning or losing your game will automatically reset</li>
+          <li>After winning or losing your game will automatically reset, so that you can play again</li>
         </ul>
       </div>
     </div>
     <div class="full_wrapper">
       <div class="container_turn">
-        <h2 class="display_turn"></h2>
+        <h2 class="display_turn noselect"></h2>
+        <div class="button_disconnect noselect">Disconnect</div>
       </div>
       <div class="container_game noselect">
         <div class="matrix matrix_own">
-          <div class="ship medium horizontal moveable" style="grid-row-start: 3; grid-column-start: 6">
-            <div class="block ship_part"></div>
-            <div class="block ship_part"></div>
-            <div class="block ship_part"></div>
-          </div>
-          <div class="ship small vertical moveable" style="grid-row-start: 1; grid-column-start: 2">
-            <div class="block ship_part"></div>
-            <div class="block ship_part"></div>
-          </div>
-          <div class="ship medium vertical moveable" style="grid-row-start: 8; grid-column-start: 6">
-            <div class="block ship_part"></div>
-            <div class="block ship_part"></div>
-            <div class="block ship_part"></div>
-          </div>
-          <div class="ship big horizontal moveable" style="grid-row-start: 6; grid-column-start: 5">
-            <div class="block ship_part"></div>
+          <div class="ship big horizontal moveable" style="grid-row-start: 1; grid-column-start: 1;">
             <div class="block ship_part"></div>
             <div class="block ship_part"></div>
             <div class="block ship_part"></div>
             <div class="block ship_part"></div>
             <div class="block ship_part"></div>
           </div>
-          <div class="ship small horizontal moveable" style="grid-row-start: 8; grid-column-start: 1">
+          <div class="ship medium horizontal moveable" style="grid-row-start: 2; grid-column-start: 1;">
             <div class="block ship_part"></div>
+            <div class="block ship_part"></div>
+            <div class="block ship_part"></div>
+          </div>
+          <div class="ship medium horizontal moveable" style="grid-row-start: 3; grid-column-start: 1;">
+            <div class="block ship_part"></div>
+            <div class="block ship_part"></div>
+            <div class="block ship_part"></div>
+          </div>
+          <div class="ship medium moveable horizontal" style="grid-row-start: 4; grid-column-start: 1;">
+            <div class="block ship_part"></div>
+            <div class="block ship_part"></div>
+            <div class="block ship_part"></div>
+          </div>
+          <div class="ship small horizontal moveable" style="grid-row-start: 5; grid-column-start: 1;">
+            <div class="block ship_part"></div>
+            <div class="block ship_part"></div>
+          </div>
+          <div class="ship small moveable horizontal" style="grid-row-start: 6; grid-column-start: 1;">
+            <div class="block ship_part"></div>
+            <div class="block ship_part"></div>
+          </div>
+          <div class="ship tiny moveable horizontal" style="grid-row-start: 7; grid-column-start: 1;">
             <div class="block ship_part"></div>
           </div>
         </div>
         <div class="matrix matrix_enemy"></div>
       </div>
       <div class="container_ui">
-        <button class="button_start noselect">Find game</button>
-        <div class="side_waiting">Finding a game...</div>
-        <div class="container_ending">
-          <h1 class="display_won"></h1>
-          <h2 class="display_message"></h2>
+        <div class="row">
+          <button class="button_start noselect">Find game</button>
+          <div class="side_waiting">Finding a game...</div>
+          <div class="container_ending">
+            <h1 class="display_won"></h1>
+            <h2 class="display_message"></h2>
+          </div>
+        </div>
+        <div class="row">
+          <div class="button_cancel noselect">cancel</div>
         </div>
       </div>
     </div>
