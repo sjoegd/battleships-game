@@ -65,6 +65,12 @@ body {
     align-items: center;
     display: none;
 }
+
+.help_overlay_container ul {
+    list-style: none;
+    margin: 1rem;
+}
+
 .help_h2 {
     text-align: center;
 }
@@ -133,6 +139,10 @@ body {
     overflow: visible;
 }
 
+.matrix_enemy {
+    z-index: 0;
+}
+
 .block {
     width: 100%;
     height: 100%;
@@ -161,6 +171,10 @@ body {
     background: white;
 }
 
+.ship.moveable:hover {
+    filter: brightness(0.80);
+}
+
 .ship {
     margin: auto;
     display: grid;
@@ -168,10 +182,18 @@ body {
     width: 100%;
     padding: 0.2rem;
     position: absolute;
+    overflow: hidden;
+    border-radius: 30%;
+    z-index: 1;
 }
 
-.ship.moveable:hover {
-    filter: brightness(0.80);
+.ship.vertical {
+    border-top-right-radius: 50%;
+    border-top-left-radius: 50%;
+}
+.ship.horizontal {
+    border-top-right-radius: 50%;
+    border-bottom-right-radius: 50%;
 }
 
 .ship.big.vertical {
@@ -205,6 +227,12 @@ body {
     grid-template: repeat(1, 1fr) / repeat(2, 1fr);
     grid-row-end: span 1;
     grid-column-end: span 2;
+}
+
+.ship.tiny {
+    grid-template: repeat(1, 1fr) / repeat(1, 1fr);
+    grid-row-end: span 1;
+    grid-column-end: span 1;
 }
 
 .dead {

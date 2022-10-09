@@ -17,7 +17,6 @@ server.listen(PORT, () => {
 
 /**
  * TODO:
- * Let user attack keep attacking if he/she hit a ship, but always make it stop when he/she kills a ship
  * Make lobbies (for friend lobbies) main idea: create a link that a friend can join
  */
 
@@ -73,13 +72,13 @@ async function startNewGame(player1, player2) {
         player2.emit("attacking", {attacking: true})
         player2_attacking = true;
     }
-   
+    
+    // handle attacking
     const player1_attack = ({x, y}) => {
         if(!player1_attacking || ended) {
             return;
         }
         player2.emit("attack", {x, y});
-        player1.emit("attacking", {attacking: false}); // move to attack info
         player1_attacking = false;
     }
 
@@ -88,7 +87,6 @@ async function startNewGame(player1, player2) {
             return;
         }
         player1.emit("attack", {x, y});
-        player2.emit("attacking", {attacking: false}); // move to attack info
         player2_attacking = false;
     }
 
@@ -97,16 +95,8 @@ async function startNewGame(player1, player2) {
             return;
         }
         player2.emit("attack_info", {x, y, hit});
-        player1.emit("attacking", {attacking: true}) 
-        player1_attacking = true;
-
-        // if(hit) {
-        //     player1.emit("attacking", {attacking: true}) 
-        //     player1_attacking = true;
-        // } else {
-        //     player2.emit("attacking", {attacking: true}) 
-        //     player2_attacking = true;
-        // }
+        
+        changeAttacker(!hit, hit);
     }
 
     const player2_attack_info = ({x, y, hit}) => {
@@ -114,8 +104,8 @@ async function startNewGame(player1, player2) {
             return;
         }
         player1.emit("attack_info", {x, y, hit});
-        player2.emit("attacking", {attacking: true})
-        player2_attacking = true;
+
+        changeAttacker(hit, !hit);
     }
     
     player1.on("attack", player1_attack)
@@ -130,6 +120,8 @@ async function startNewGame(player1, player2) {
             return;
         }
         player2.emit("dead_ship", {x, y, width, height})
+
+        changeAttacker(true, false);
     }
 
     const player2_dead_ship = ({x, y, width, height}) => {
@@ -137,6 +129,8 @@ async function startNewGame(player1, player2) {
             return;
         }
         player1.emit("dead_ship", {x, y, width, height})
+
+        changeAttacker(false, true);
     }
 
     player1.on("dead_ship", player1_dead_ship)
@@ -186,6 +180,13 @@ async function startNewGame(player1, player2) {
 
     player1.on("dead", player1_dead)
     player2.on("dead", player2_dead)
+
+    function changeAttacker(play1, play2) {
+        player1.emit("attacking", {attacking: play1}) 
+        player2.emit("attacking", {attacking: play2})
+        player1_attacking = play1;
+        player2_attacking = play2;
+    }
 
     function setReset() {
         player1.off("attack", player1_attack)
