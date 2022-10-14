@@ -1,6 +1,6 @@
 /**
  * TODO:
- * Add a cancel button when queueing, add a chat?, add a game state shower and a disconnect button next to it which leaves the match.
+ * Add a randomize ships button
  */
 
 // setup socket
@@ -177,7 +177,7 @@ MATRIX_OWN.addEventListener('pointerdown', event => {
 })
 
 MATRIX_ENEMY.addEventListener('click', event => {
-  if (event.target != MATRIX_ENEMY || !ATTACKING) {
+  if ((event.target != MATRIX_ENEMY && !event.target.classList.contains("matrix_tile")) || !ATTACKING) {
     return;
   }
   // send attack to enemy through server

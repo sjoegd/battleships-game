@@ -84,16 +84,16 @@ async function startNewGame(player1, player2) {
         if(!player1_attacking || ended) {
             return;
         }
-        player2.emit("attack", {x, y});
         player1_attacking = false;
+        player2.emit("attack", {x, y});
     }
 
     const player2_attack = ({x, y}) => {
         if(!player2_attacking || ended) {
             return;
         }
-        player1.emit("attack", {x, y});
         player2_attacking = false;
+        player1.emit("attack", {x, y});
     }
 
     const player1_attack_info = ({x, y, hit}) => {
@@ -194,7 +194,7 @@ async function startNewGame(player1, player2) {
         ended = true;
         player1.emit("reset");
         player2.emit("ended", {winner: true, message: "Enemy disconnected"});
-        setReset(true)
+        setReset(true, false)
     }
 
     const player2_leave = () => {
