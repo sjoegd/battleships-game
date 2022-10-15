@@ -1,5 +1,10 @@
 :root {
     font-size: 2vmin;
+    --grey-v1: linear-gradient(210deg, rgba(169,169,169,1) 36%, rgba(105,105,105,1) 88%);
+    --grey-v2: linear-gradient(120deg, rgba(169,169,169,1) 36%, rgba(105,105,105,1) 88%);
+    --darkgrey-v1: linear-gradient(210deg, rgba(105,105,105,1) 36%, rgba(63,63,63,1) 88%);
+    --darkgrey-v2: linear-gradient(120deg, rgba(105,105,105,1) 36%, rgba(63,63,63,1) 88%);
+    --white-v1: linear-gradient(210deg, rgba(255,255,255,1) 36%, rgba(222,222,222,1) 87%);
 }
 
 body {
@@ -10,7 +15,7 @@ body {
     justify-content: center;
     height: 100vh;
     width: 100vw;
-    background-color: rgba(166, 255, 255, 0.959);
+    background-color: rgba(166, 255, 255, 0.966);
     overflow: hidden;
 }
 
@@ -39,8 +44,8 @@ body {
     justify-content: center;
     align-items: center;
     border-radius: 50%;
-    border: solid grey 0.15rem;
-    color: grey;
+    border: solid rgb(78, 78, 78) 0.15rem;
+    color: rgb(78, 78, 78);
     z-index: 11;
 }
 .help_button:hover {
@@ -59,8 +64,8 @@ body {
     left: 0;
     width: 20rem;
     height: 100vh;
-    background: grey;
-    opacity: 0.9;
+    background: rgb(169,169,169);
+    opacity: 0.8;
     z-index: 10;
     align-items: center;
     display: none;
@@ -141,10 +146,10 @@ body {
 }
 
 .matrix_tile:before {
-    background: rgba(81, 206, 241, 0.356);
+    background: rgba(70, 177, 206, 0.699);
     content: "";
     position: absolute;
-    inset: 0.05rem;
+    inset: 0.07rem;
 }
 
 .matrix_row {
@@ -153,18 +158,6 @@ body {
     grid-template: 1fr / repeat(10, 10%);
     width: 100%;
     height: 100%;
-}
-
-@keyframes matrix-background-move {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
 }
 
 .matrix {
@@ -183,15 +176,24 @@ body {
 .block {
     width: 100%;
     height: 100%;
+    z-index: 1;
 }
 
 .block.ship_part {
-    background: grey;
+    background: var(--grey-v1);
 }
 
 .block.ship_part.destroyed {
-    background: rgb(63, 63, 63);
+    background: var(--darkgrey-v1);
 }
+
+.vertical .block.ship_part {
+    background: var(--grey-v2);
+}
+
+.vertical .block.ship_part.destroyed {
+    background: var(--darkgrey-v2);
+} 
 
 .block.ship_part.destroyed.enemy {
     margin: auto;
@@ -205,7 +207,7 @@ body {
     width: 75%;
     height: 75%;
     border-radius: 50%;
-    background: white;
+    background: var(--white-v1);
 }
 
 .ship.moveable:hover {
@@ -273,7 +275,6 @@ body {
 }
 
 .dead {
-    /* make some nice dead image or something */
     background: url("../images/red_x.png");
     background-size: contain;
     z-index: 2;
@@ -308,6 +309,7 @@ body {
 
 .button_disconnect {
     margin-left: auto;
+    margin-top: auto;
     color: rgb(63, 63, 63);
     background: rgba(81, 206, 241, 0.356);
     width: 4.2rem;

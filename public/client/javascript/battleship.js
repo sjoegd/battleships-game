@@ -29,6 +29,10 @@ function getMATRIX_BOUNDS() {
   return MATRIX_OWN.getBoundingClientRect();
 }
 
+function getENEMYMATRIX_BOUNDS() {
+  return MATRIX_ENEMY.getBoundingClientRect();
+}
+
 // Ship info (based on horizontal)
 const SHIP_INFO = new Map(
   Object.entries({
@@ -177,13 +181,13 @@ MATRIX_OWN.addEventListener('pointerdown', event => {
 })
 
 MATRIX_ENEMY.addEventListener('click', event => {
-  if ((event.target != MATRIX_ENEMY && !event.target.classList.contains("matrix_tile")) || !ATTACKING) {
+  if ((!event.target.classList.contains("matrix_tile")) || !ATTACKING) {
     return;
   }
   // send attack to enemy through server
   socket.emit('attack', {
-    x: Math.floor((event.offsetX / getMATRIX_WIDTH()) * 10),
-    y: Math.floor((event.offsetY / getMATRIX_WIDTH()) * 10),
+    x: Math.floor(((event.pageX - getENEMYMATRIX_BOUNDS().x) / getMATRIX_WIDTH()) * 10),
+    y: Math.floor(((event.pageY - getENEMYMATRIX_BOUNDS().y) / getMATRIX_WIDTH()) * 10),
   });
 });
 
@@ -248,7 +252,9 @@ socket.on('reset', () => {
   ATTACKING = false;
 
   // reset enemy matrix
-  MATRIX_ENEMY.replaceChildren();
+  while(MATRIX_ENEMY.children.length > 10) {
+    MATRIX_ENEMY.lastChild.remove();
+  }
 
   // reset my matrix 
   let remove_list = []
